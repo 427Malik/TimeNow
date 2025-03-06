@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TimeNow - Digital Clock | World Time</title>
-    <meta name="description" content="Check the accurate current time with TimeNow - a digital clock displaying world time zones with real-time updates.">
-    <meta name="keywords" content="digital clock, world time, current time, real-time clock, time zones, global time, timezone converter">
+    <meta name="description" content="Check the accurate current time with TimeNow - a digital clock displaying world time zones with real-time updates. Stay updated with global time, date, and time zones.">
+    <meta name="keywords" content="digital clock, world time, current time, real-time clock, time zones, global time, timezone converter, online clock, world clock, universal time">
     <meta name="author" content="TimeNow Team">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="TimeNow - Digital Clock | World Time">
+    <meta property="og:description" content="Check the accurate current time with TimeNow. Get real-time updates on world time zones and current date & time.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourwebsite.com">
+    <meta property="og:image" content="https://yourwebsite.com/thumbnail.jpg">
+    <link rel="canonical" href="https://yourwebsite.com">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,19 +46,25 @@
 <body>
     <h1>TimeNow - Digital Clock</h1>
     <p>Get the exact current time based on your location.</p>
-    <div id="clock">00:00:00</div>
+    <div id="clock">00:00:00 AM</div>
     <div id="date">Loading...</div>
     <div id="timezone">Detecting time zone...</div>
     <script>
         function updateClock() {
             let now = new Date();
-            let hours = now.getHours().toString().padStart(2, '0');
+            let hours = now.getHours();
             let minutes = now.getMinutes().toString().padStart(2, '0');
             let seconds = now.getSeconds().toString().padStart(2, '0');
-            document.getElementById('clock').innerText = `${hours}:${minutes}:${seconds}`;
+            let ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            hours = hours.toString().padStart(2, '0');
+            document.getElementById('clock').innerText = `${hours}:${minutes}:${seconds} ${ampm}`;
             
             let dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('date').innerText = now.toLocaleDateString('en-US', dateOptions);
+            
+            let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.getElementById('timezone').innerText = `Time Zone: ${timeZone}`;
         }
         setInterval(updateClock, 1000);
         updateClock();
