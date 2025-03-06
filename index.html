@@ -100,8 +100,10 @@
         }
         
         function updateBackground(zone) {
-            let countryCode = zone.split('/')[0];
-            document.body.style.backgroundImage = `url('https://flagcdn.com/w640/${countryCode.toLowerCase()}.jpg')`;
+            let countryCode = zone.split('/')[0].toLowerCase();
+            if (countryCode === 'us') countryCode = 'us';
+            if (countryCode === 'uk') countryCode = 'gb';
+            document.body.style.backgroundImage = `url('https://flagcdn.com/w640/${countryCode}.jpg')`;
         }
         
         function updateClock() {
