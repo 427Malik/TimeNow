@@ -26,11 +26,17 @@
             font-size: 24px;
             color: #ddd;
         }
+        #timezone {
+            font-size: 20px;
+            color: #bbb;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div id="clock">00:00:00</div>
     <div id="date">Loading...</div>
+    <div id="timezone">Detecting time zone...</div>
     <script>
         function updateClock() {
             let now = new Date();
@@ -42,6 +48,9 @@
             
             let dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('date').innerText = now.toLocaleDateString('en-US', dateOptions);
+            
+            let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.getElementById('timezone').innerText = `Time Zone: ${timeZone}`;
         }
         setInterval(updateClock, 1000);
         updateClock();
