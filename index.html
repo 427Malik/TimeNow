@@ -95,7 +95,9 @@
         async function fetchTime(zone) {
             let response = await fetch(`https://worldtimeapi.org/api/timezone/${zone}`);
             let timeData = await response.json();
-            document.getElementById('search-results').innerText = `Time in ${zone}: ${timeData.datetime.slice(11, 19)}`;
+            let timeString = timeData.datetime.slice(11, 19);
+            document.getElementById('clock').innerText = timeString;
+            document.getElementById('timezone').innerText = `Time Zone: ${zone}`;
             updateBackground(zone);
         }
         
@@ -103,22 +105,18 @@
             let countryCode = zone.split('/')[0].toLowerCase();
             if (countryCode === 'us') countryCode = 'us';
             if (countryCode === 'uk') countryCode = 'gb';
-            document.body.style.backgroundImage = `url('https://flagcdn.com/w640/${countryCode}.jpg')`;
+            document.body.style.backgroundImage = `url('https://flagcdn.com/w640/${countryCode}.png')`;
         }
         
         function updateClock() {
             let now = new Date();
-            let hours = now.getHours() % 12 || 12;
+            let hours = now.getHours().toString().padStart(2, '0');
             let minutes = now.getMinutes().toString().padStart(2, '0');
             let seconds = now.getSeconds().toString().padStart(2, '0');
-            let amPm = now.getHours() >= 12 ? 'PM' : 'AM';
-            document.getElementById('clock').innerText = `${hours}:${minutes}:${seconds} ${amPm}`;
+            document.getElementById('clock').innerText = `${hours}:${minutes}:${seconds}`;
             
             let dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('date').innerText = now.toLocaleDateString('en-US', dateOptions);
-            
-            let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            document.getElementById('timezone').innerText = `Time Zone: ${timeZone}`;
         }
         setInterval(updateClock, 1000);
         updateClock();
