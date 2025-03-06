@@ -14,12 +14,10 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-size: cover;
-            background-position: center;
+            background: black;
             color: #fff;
             text-align: center;
             flex-direction: column;
-            transition: background 0.5s ease-in-out;
         }
         #clock {
             font-size: 70px;
@@ -36,78 +34,15 @@
             color: #bbb;
             margin-top: 10px;
         }
-        #search {
-            margin-top: 20px;
-            padding: 10px;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            text-align: center;
-        }
-        #suggestions {
-            margin-top: 5px;
-            background: #333;
-            color: white;
-            border-radius: 5px;
-            padding: 5px;
-            max-width: 250px;
-        }
-        #search-results {
-            margin-top: 10px;
-            font-size: 18px;
-            color: #fff;
-        }
     </style>
 </head>
 <body>
     <h1>TimeNow - Digital Clock</h1>
-    <p>Get the exact current time based on your location or search any country.</p>
-    <input type="text" id="search" placeholder="Enter country/city name..." onkeyup="searchTimeZone()" autocomplete="off">
-    <div id="suggestions"></div>
-    <div id="search-results"></div>
+    <p>Get the exact current time based on your location.</p>
     <div id="clock">00:00:00</div>
     <div id="date">Loading...</div>
     <div id="timezone">Detecting time zone...</div>
     <script>
-        let timezones = [];
-        async function fetchTimeZones() {
-            let response = await fetch(`https://worldtimeapi.org/api/timezone`);
-            timezones = await response.json();
-        }
-        fetchTimeZones();
-        
-        async function searchTimeZone() {
-            let query = document.getElementById('search').value.trim().toLowerCase();
-            let suggestionsBox = document.getElementById('suggestions');
-            suggestionsBox.innerHTML = '';
-            if (query.length < 2) return;
-            
-            let matchedZones = timezones.filter(zone => zone.toLowerCase().includes(query)).slice(0, 5);
-            matchedZones.forEach(zone => {
-                let div = document.createElement('div');
-                div.innerText = zone;
-                div.style.cursor = 'pointer';
-                div.onclick = () => fetchTime(zone);
-                suggestionsBox.appendChild(div);
-            });
-        }
-        
-        async function fetchTime(zone) {
-            let response = await fetch(`https://worldtimeapi.org/api/timezone/${zone}`);
-            let timeData = await response.json();
-            let timeString = timeData.datetime.slice(11, 19);
-            document.getElementById('clock').innerText = timeString;
-            document.getElementById('timezone').innerText = `Time Zone: ${zone}`;
-            updateBackground(zone);
-        }
-        
-        function updateBackground(zone) {
-            let countryCode = zone.split('/')[0].toLowerCase();
-            if (countryCode === 'us') countryCode = 'us';
-            if (countryCode === 'uk') countryCode = 'gb';
-            document.body.style.backgroundImage = `url('https://flagcdn.com/w640/${countryCode}.png')`;
-        }
-        
         function updateClock() {
             let now = new Date();
             let hours = now.getHours().toString().padStart(2, '0');
