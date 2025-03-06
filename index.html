@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TimeNow - Digital Clock | World Time</title>
     <meta name="description" content="Check the accurate current time with TimeNow - a digital clock displaying world time zones with real-time updates.">
-    <meta name="keywords" content="digital clock, world time, current time, real-time clock, time zones">
+    <meta name="keywords" content="digital clock, world time, current time, real-time clock, time zones, global time, timezone converter">
     <meta name="author" content="TimeNow Team">
     <style>
         body {
@@ -34,15 +34,68 @@
             color: #bbb;
             margin-top: 10px;
         }
+        #search {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        #suggestions {
+            margin-top: 5px;
+            background: #333;
+            color: white;
+            border-radius: 5px;
+            padding: 5px;
+            max-width: 250px;
+        }
+        #search-results {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
     <h1>TimeNow - Digital Clock</h1>
-    <p>Get the exact current time based on your location.</p>
+    <p>Get the exact current time based on your location or search any country.</p>
+    <input type="text" id="search" placeholder="Enter country/city name..." onkeyup="searchTimeZone()" autocomplete="off">
+    <div id="suggestions"></div>
+    <div id="search-results"></div>
     <div id="clock">00:00:00</div>
     <div id="date">Loading...</div>
     <div id="timezone">Detecting time zone...</div>
     <script>
+        let timezones = [];
+        async function fetchTimeZones() {
+            let response = await fetch(`https://worldtimeapi.org/api/timezone`);
+            timezones = await response.json();
+        }
+        fetchTimeZones();
+        
+        async function searchTimeZone() {
+            let query = document.getElementById('search').value.trim().toLowerCase();
+            let suggestionsBox = document.getElementById('suggestions');
+            suggestionsBox.innerHTML = '';
+            if (query.length < 2) return;
+            
+            let matchedZones = timezones.filter(zone => zone.toLowerCase().includes(query)).slice(0, 5);
+            matchedZones.forEach(zone => {
+                let div = document.createElement('div');
+                div.innerText = zone;
+                div.style.cursor = 'pointer';
+                div.onclick = () => fetchTime(zone);
+                suggestionsBox.appendChild(div);
+            });
+        }
+        
+        async function fetchTime(zone) {
+            let response = await fetch(`https://worldtimeapi.org/api/timezone/${zone}`);
+            let timeData = await response.json();
+            document.getElementById('search-results').innerText = `Time in ${zone}: ${timeData.datetime.slice(11, 19)}`;
+        }
+        
         function updateClock() {
             let now = new Date();
             let hours = now.getHours() % 12 || 12;
