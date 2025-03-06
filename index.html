@@ -14,10 +14,12 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(120deg, #1a1a2e, #16213e);
+            background-size: cover;
+            background-position: center;
             color: #fff;
             text-align: center;
             flex-direction: column;
+            transition: background 0.5s ease-in-out;
         }
         #clock {
             font-size: 70px;
@@ -94,6 +96,12 @@
             let response = await fetch(`https://worldtimeapi.org/api/timezone/${zone}`);
             let timeData = await response.json();
             document.getElementById('search-results').innerText = `Time in ${zone}: ${timeData.datetime.slice(11, 19)}`;
+            updateBackground(zone);
+        }
+        
+        function updateBackground(zone) {
+            let countryCode = zone.split('/')[0];
+            document.body.style.backgroundImage = `url('https://flagcdn.com/w640/${countryCode.toLowerCase()}.jpg')`;
         }
         
         function updateClock() {
