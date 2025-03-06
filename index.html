@@ -41,6 +41,12 @@
             color: #bbb;
             margin-top: 10px;
         }
+        #location {
+            font-size: 22px;
+            color: #ffa500;
+            margin-top: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -49,6 +55,7 @@
     <div id="clock">00:00:00 AM</div>
     <div id="date">Loading...</div>
     <div id="timezone">Detecting time zone...</div>
+    <div id="location">Detecting location...</div>
     <script>
         function updateClock() {
             let now = new Date();
@@ -66,8 +73,21 @@
             let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById('timezone').innerText = `Time Zone: ${timeZone}`;
         }
+        
+        function fetchLocation() {
+            fetch('https://ipapi.co/json/')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('location').innerText = `Location: ${data.city}, ${data.country_name}`;
+                })
+                .catch(() => {
+                    document.getElementById('location').innerText = 'Location: Unable to fetch';
+                });
+        }
+        
         setInterval(updateClock, 1000);
         updateClock();
+        fetchLocation();
     </script>
 </body>
 </html>
